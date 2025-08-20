@@ -106,6 +106,11 @@ select d.dname,avg(sal) from emp e join dept d on  e.deptno=d.deptno group by d.
 
 
 
+
+
+
+
+
  
 
 
