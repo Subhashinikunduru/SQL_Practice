@@ -1,6 +1,6 @@
 use batch61;
 # USING GROUP BY CLAUSE
-#-------------------------------
+
 #List the total salary paid to each department.
 select deptno,sum(sal) as total_sal_to_dept from emp group by deptno;
 
@@ -30,7 +30,7 @@ select mgr,count(*) emp_count_per_mgr from emp group by mgr;
 
 # List total salary and total commission by job.
  select job,sum(comm) as total_comm,sum(sal) as total_sal from emp group by job;
-#------------------------------------------------------------------------------------------ 
+#--===================================================================================================
  # USEING HAVING CLAUSES
 
  #List departments having more than 3 employees.
@@ -97,24 +97,59 @@ select job,sum(sal) total_salary from emp group by job having sum(sal)>5000;
 select d.dname,sum(sal) from emp e join dept d on e.deptno=d.deptno group by d.dname;
 
 select d.dname,avg(sal) from emp e join dept d on  e.deptno=d.deptno group by d.dname having avg(sal)>2000;
+#==========================================================================================
+# Grouping by Multiple Columns
+# List total salary for each job in each department.
+select job,d.dname,sum(sal) as total_sal from emp e join dept d on e.deptno=d.deptno group by job,d.dname;
 
+#Count employees by job and manager.
+select job,mgr,count(*)as count_emp from emp e group by job,mgr; 
 
+# Show department and job-wise average salary.
+select d.dname,job,avg(sal) as avg_sal from emp e join dept d on e.deptno=d.deptno group by d.dname,job; 
 
+# List department and job combinations where max salary exceeds 3000.
+select d.dname,job,max(sal) as max_sal from emp e join dept d on e.deptno=d.deptno group by d.dname,job having max(sal)<3000;
 
+# Count employees grouped by DEPTNO and JOB.
+select deptno,job,count(*) emp_count from emp group by deptno,job;
+#===========================================================================================================
+#HAVING with Aggregate Functions
 
-
-
-
-
-
-
-
-
-
+#List departments having more than 1 employee and total salary above 5000.
+select d.dname,sum(e.sal) as total_sal,count(*) as emp_count from emp e join dept d on e.deptno=d.deptno group by d.dname
+ having sum(e.sal)>5000 and count(*)>1;
  
+ #Find jobs where sum of salary is greater than 6000.
+select job,sum(sal)as sum_sal from emp group by job having sum(sal)>6000;
 
+# Show department/job groups where count of employees is more than 1 and avg salary < 2500.
+select d.dname,job,count(*)as emp_count,avg(sal) from emp e join dept d on e.deptno=d.deptno group by d.dname,job 
+having count(*)>1 and avg(sal)<2500;
 
+# Show job roles with more than 2 employees and max salary below 3000.
+select job,max(sal) as max_sal,count(*) as emp_count from emp group by job having max(sal)<3000 and count(*)>2;
 
+#Show managers who manage more than 2 employees with average salary > 1500.
+select mgr,count(*) as emp_count,avg(sal) as avg_sal from emp group by mgr 
+having count(*)>2 and avg(sal)>1500;
+#==================================================================================================
+#Filtering vs Grouping
+# Show department-wise average salary but only include employees with salary > 1000.
+select d.dname,count(*) as emp_count,avg(e.sal) as avg_sal from emp e join dept d on e.deptno=d.deptno where e.sal>1000
+ group by d.dname;
+
+# List job-wise total commission where commission is not null.
+select job ,sum(comm) from emp e  where comm is not null group by job;
+
+# Count employees hired after 01-Jan-1981 grouped by department.
+select d.dname,count(*) as emp_count from emp e join dept d on e.deptno=d.deptno where e.hiredate>'1981-01-01' group by d.dname;
+
+#Show department-wise total salary excluding SALESMANs.
+select d.dname,sum(e.sal) as sum_sal from emp e join dept d on e.deptno=d.deptno where e.job!='SALESMAN' group by d.dname;
+
+# Show average salary per department for employees earning more than 2000.
+select d.dname,avg(e.sal), count(*) as emp_count from emp e join dept d  on e.deptno = d.deptno where e.sal>2000 group by d.dname;
 
 
 
