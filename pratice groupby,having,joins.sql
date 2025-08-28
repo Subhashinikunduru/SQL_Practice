@@ -150,6 +150,37 @@ select d.dname,sum(e.sal) as sum_sal from emp e join dept d on e.deptno=d.deptno
 
 # Show average salary per department for employees earning more than 2000.
 select d.dname,avg(e.sal), count(*) as emp_count from emp e join dept d  on e.deptno = d.deptno where e.sal>2000 group by d.dname;
+#=================================================================================================
+
+#Using ORDER BY with GROUP BY
+# List departments and total salary ordered by salary descending.
+select d.dname,sum(sal) as total_sal from emp e join dept d on e.deptno=d.deptno group by d.dname order by sum(sal) desc;
+
+# Show job-wise employee count ordered by count descending.
+select job,count(*) as emp_count from emp group by job order by emp_count desc;
+
+# Show department-wise average salary ordered by department name.
+select d.dname, avg(sal) from emp e join dept d on e.deptno=d.deptno group by d.dname order by d.dname;
+
+#Show job-wise total salary ordered by job title.
+select job,sum(sal) from emp group by job order by job;
+
+#===========================================================================================
+#Complex HAVING Examples
+
+# List departments where average salary is greater than overall average salary.
+select d.dname,avg(sal) from emp e join dept d on e.deptno=d.deptno group by d.dname having avg(sal)>(select avg(sal) from emp) ;
+
+#Show departments having total commission greater than average commission across all.
+select d.dname,sum(e.comm) as total_comm from emp e join dept d on e.deptno=d.deptno group by d.dname
+ having sum(e.comm)>(select avg(comm) from emp);
+ 
+ select d.dname,sum(e.comm) as total_comm from emp e join dept d on e.deptno=d.deptno where e.comm is not null group by d.dname
+ having sum(e.comm)>(select avg(comm) from emp where comm is not null );
+ 
+ # List jobs where minimum salary is greater than maximum salary of CLERKs.
+select job,min(sal) from emp group by job having min(sal) >max(sal);
+
 
 
 
