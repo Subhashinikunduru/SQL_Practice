@@ -179,7 +179,18 @@ select d.dname,sum(e.comm) as total_comm from emp e join dept d on e.deptno=d.de
  having sum(e.comm)>(select avg(comm) from emp where comm is not null );
  
  # List jobs where minimum salary is greater than maximum salary of CLERKs.
-select job,min(sal) from emp group by job having min(sal) >max(sal);
+select job,min(sal) as min_sal from emp where job <> 'clerk' group by job having min(sal) >(select max(sal) from emp where job = 'clerk');
+
+SELECT job, MIN(sal) AS min_salary
+FROM emp
+WHERE job <> 'CLERK'
+GROUP BY job
+HAVING MIN(sal) > (SELECT MAX(sal) FROM emp WHERE job = 'CLERK');
+
+
+
+
+
 
 
 
