@@ -1,3 +1,4 @@
+ use batch61;
 call batch61.UpdateSalaryByDept(10, 10);
 select * from emp;
 
@@ -39,7 +40,10 @@ inner join salgrade s on e.sal between s.losal and s.hisal
 where (e.deptno,e.sal)in(select deptno,max(sal) from emp e group by deptno);
 
 
+select e.ename,job,e.sal,s.grade,d.dname from emp e join dept d on e.deptno=d.deptno
+join salgrade s on e.sal between s.losal and hisal 
+where e.sal<(select avg(sal) from emp where deptno=e.deptno) and s.grade>=4; 
 
- 
- 
- 
+select e.ename,job,e.sal,d.dname,d.loc,s.grade from emp e join dept d on e.deptno=d.deptno
+join salgrade s on e.sal between s.losal and hisal
+where d.loc in('DALLAS', 'CHICAGO')and e.sal>  (select avg(sal) from emp where deptno=e.deptno);
